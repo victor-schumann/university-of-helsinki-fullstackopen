@@ -8,7 +8,7 @@ const App = () => {
 
 
   return (
-    <div>
+    <>
       <Header />
       <div style={{ display: 'flex', gap: '10px' }}>
         <Button name={'good'} onClick={() => setGood(good + 1)} text="Good" />
@@ -16,7 +16,7 @@ const App = () => {
         <Button name={'bad'} onClick={() => setBad(bad + 1)} text="Bad" />
       </div>
       <Statistics good={good} neutral={neutral} bad={bad} />
-    </div>
+    </>
   )
 }
 
@@ -50,32 +50,40 @@ const Statistics = (props) => {
     positive = props.good * 100 / (all)
 
     return (
-      <div>
+      <>
         <h1>statistics</h1>
-        <StatisticLine text={"good"} value={props.good} />
-        <StatisticLine text={"neutral"} value={props.neutral} />
-        <StatisticLine text={"bad"} value={props.bad} />
-        <StatisticLine text={"all"} value={all} />
-        <StatisticLine text={"average"} value={average} />
-        <StatisticLine text={"positive"} value={positive + "%"} />
-      </div>
+        <table>
+          <tbody>
+            <StatisticLine text={"good"} value={props.good} />
+            <StatisticLine text={"neutral"} value={props.neutral} />
+            <StatisticLine text={"bad"} value={props.bad} />
+            <StatisticLine text={"all"} value={all} />
+            <StatisticLine text={"average"} value={average} />
+            <StatisticLine text={"positive"} value={positive + "%"} />
+          </tbody>
+        </table>
+
+      </>
     )
   }
 
   else {
     return (
-      <div>
+      <>
         <h1>statistics</h1>
         <p>No feedback given</p>
-      </div>
+      </>
     )
   }
 }
 
 const StatisticLine = (props) => {
   return (
-    <div>
-      {props.name} {props.value}
-    </div>
+    <>
+      <tr>
+        <td>{props.text}</td>
+        <td>{props.value}</td>
+      </tr>
+    </>
   )
 }
