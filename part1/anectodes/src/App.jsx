@@ -12,25 +12,40 @@ const App = () => {
     'The only way to go fast, is to go well.'
   ]
 
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
+
   const [selected, setSelected] = useState(0)
-  console.log(selected)
+
+  const handleVoteClick = () => {
+    const copy = [...votes]
+    copy[selected]++
+    setVotes(copy)
+
+  }
 
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
+      <p>
+        <h1>Anectode of the day</h1>
+        {anecdotes[selected]}
+        <br></br>
+      has {votes[selected]} votes
+      </p>
+      
+      <Button text="vote" onClick={handleVoteClick} />
       <Button text="next anecdote" onClick={() => setSelected(Math.floor(Math.random() * 8))} />
     </div>
+  )
+}
 
+const Button = (props) => {
+  return (
+    <>
+      <button style={{ marginRight: '10px' }} onClick={props.onClick}>
+        {props.text}
+      </button>
+    </>
   )
 }
 
 export default App
-
-// Begin components
-const Button = (props) => {
-  return (
-    <>
-      <button onClick={props.onClick}>{props.text}</button>
-    </>
-  )
-}
