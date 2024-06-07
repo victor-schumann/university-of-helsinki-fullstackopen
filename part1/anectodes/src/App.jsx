@@ -13,29 +13,61 @@ const App = () => {
   ]
 
   const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
-
+  const [mostVoted, setMostVoted] = useState(0)
   const [selected, setSelected] = useState(0)
-
   const handleVoteClick = () => {
     const copy = [...votes]
     copy[selected]++
     setVotes(copy)
 
   }
+  const currentMostVotedVotes = votes[mostVoted]
+  if (votes[selected] > currentMostVotedVotes) {
+    setMostVoted(selected)
+  }
 
   return (
     <div>
+      <h1>Anectode of the day</h1>
       <p>
-        <h1>Anectode of the day</h1>
         {anecdotes[selected]}
         <br></br>
-      has {votes[selected]} votes
+        has {votes[selected]} votes
       </p>
-      
+
       <Button text="vote" onClick={handleVoteClick} />
       <Button text="next anecdote" onClick={() => setSelected(Math.floor(Math.random() * 8))} />
+
+      <h1>Anectode with most votes</h1>
+      <MostVoted mostVoted={mostVoted} anecdotes={anecdotes} votes={votes} />
     </div>
   )
+}
+
+const MostVoted = ({ mostVoted, anecdotes, votes }) => {
+  console.log(votes)
+  let sum = 0
+  for (let i = 0; i < votes.length; i++) {
+    sum += votes[i]
+  }
+  if (sum == 0) {
+    return (
+      <>
+      </>
+    )
+  }
+  
+  else {
+    return (
+      <>
+        {mostVoted !== -1 && ( // Check if any anecdote has a vote
+          <p>
+            "{anecdotes[mostVoted]}" with {votes[mostVoted]} votes.
+          </p>
+        )}
+      </>
+    )
+  }
 }
 
 const Button = (props) => {
