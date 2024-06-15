@@ -1,27 +1,51 @@
 const App = () => {
-  const course = {
-    id: 1,
-    name: 'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10,
-        id: 1
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7,
-        id: 2
-      },
-      {
-        name: 'State of a component',
-        exercises: 14,
-        id: 3
-      }
-    ]
-  }
+  const courses = [
+    {
+      id: 1,
+      name: 'Half Stack application development',
+      parts: [
+        {
+          name: 'Fundamentals of React',
+          exercises: 10,
+          id: 1
+        },
+        {
+          name: 'Using props to pass data',
+          exercises: 7,
+          id: 2
+        },
+        {
+          name: 'State of a component',
+          exercises: 14,
+          id: 3
+        }
+      ]
+    },
+    {
+      id: 2,
+      name: 'Node.js course',
+      parts: [
+        {
+          name: 'Routing',
+          exercises: 3,
+          id: 1
+        },
+        {
+          name: 'Middlewares',
+          exercises: 7,
+          id: 2
+        }
+      ]
+    }
+  ]
 
-  return <Course course={course} />
+  return (
+    <div>
+      {courses.map(course => (
+        <Course key={course.id} course={course} />
+      ))}
+    </div>
+  )
 }
 
 const Header = (props) => {
@@ -36,12 +60,12 @@ const Part = (props) => {
   )
 }
 
-const Content = (props) => {
+const Content = ({ parts }) => {
   return (
     <div>
-      <Part part={props.part1} exercises1={props.exercises1} />
-      <Part part={props.part2} exercises1={props.exercises2} />
-      <Part part={props.part3} exercises1={props.exercises3} />
+      {parts.map(part => (
+        <Part key={part.id} part={part.name} exercises={part.exercises} />
+      ))}
     </div>
   )
 }
@@ -54,28 +78,14 @@ const Total = (props) => {
   return <p><b>Number of Exercises {total}</b></p>
 }
 
-
-export default App
-
 const Course = ({ course }) => {
   return (
     <div>
       <Header course={course.name} />
-      <Content
-        part1={course.parts[0].name}
-        exercises1={course.parts[0].exercises}
-
-        part2={course.parts[1].name}
-        exercises2={course.parts[1].exercises}
-
-        part3={course.parts[2].name}
-        exercises3={course.parts[2].exercises}
-      />
-
-      <Total
-        parts={course.parts
-        }
-      />
+      <Content parts={course.parts} />
+      <Total parts={course.parts} />
     </div>
   )
 }
+
+export default App
