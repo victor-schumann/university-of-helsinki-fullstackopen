@@ -70,6 +70,7 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
+
     const newPerson = {
       name: newName,
       number: newNumber
@@ -80,9 +81,13 @@ const App = () => {
       return
     }
 
-    setPersons(persons.concat(newPerson))
-    setNewName('')
-    setNewNumber('')
+    axios.post('http://localhost:3000/persons', newPerson) // send a post and save the promise
+      .then((response) => {                              // when post is successful, update notes const
+        const updatedPersons = persons.concat(newPerson) // create new list
+        setPersons(updatedPersons)                         // transform old notes to new note list
+        setNewName('')                                   // clear
+        setNewNumber('')                                 // clear
+    })
   }
 
   const filteredPersons = persons.filter(person =>
