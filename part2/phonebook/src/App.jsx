@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import personService from './services/persons'
 
-
 const Filter = ({ filter, handleFilterChange }) => {
   return (
     <div>
@@ -26,19 +25,19 @@ const PersonForm = ({ newName, newNumber, handleNameChange, handleNumberChange, 
   )
 }
 
-const Person = ({ person }) => {
+const Person = ({ person, deletePerson }) => {
   return (
     <div>
-      {person.name} {person.number}
+      <button onClick={() => deletePerson(person.id)}>delete</button> {person.name} {person.number}
     </div>
   )
 }
 
-const Persons = ({ persons }) => {
+const Persons = ({ persons, deletePerson }) => {
   return (
     <div>
-      {persons.map((person, index) => (
-        <Person key={index} person={person} />
+      {persons.map((person) => (
+        <Person key={person.id} person={person} deletePerson={deletePerson} />
       ))}
     </div>
   )
@@ -52,9 +51,7 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-    console.log('effect')
     personService.getAll().then(response => {
-      console.log('promise fulfilled')
       setPersons(response.data)
     })
   }, [])
@@ -83,11 +80,25 @@ const App = () => {
     }
 
     personService.create(newPerson).then((response) => {
-      const updatedPersons = persons.concat(newPerson)
+      const updatedPersons = persons.concat(response.data)
       setPersons(updatedPersons)
       setNewName('')
       setNewNumber('')
     })
+  }
+
+  const deletePerson = (id) => {
+    if (window.confirm(`Do you really want to delete this person?`)) {
+      personService.unlink(id)
+        .then(() => {
+          const updatedPersons = persons.filter(p => p.id !== id);
+          setPersons(updatedPersons);
+        })
+        .catch(error => {
+          alert('Error deleting person');
+          console.error('Error:', error);
+        });
+    }
   }
 
   const filteredPersons = persons.filter(person =>
@@ -112,7 +123,7 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} deletePerson={deletePerson} />
     </div>
   )
 }
