@@ -51,9 +51,14 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-    personService.getAll().then(response => {
+    personService.getAll()
+    .then(response => {
       setPersons(response.data)
     })
+    .catch(error => {
+      alert('Error detting persons');
+      console.error('Error:', error);
+    });
   }, [])
 
   const handleNameChange = (event) => {
@@ -67,25 +72,48 @@ const App = () => {
   }
 
   const addPerson = (event) => {
-    event.preventDefault()
-
+    event.preventDefault();
+  
     const newPerson = {
       name: newName,
       number: newNumber
+    };
+  
+    const existingPerson = persons.find(person => person.name === newName);
+  
+    if (existingPerson) {
+      if (window.confirm(`${newName} is already added to phonebook. Replace the old number with a new one?`)) {
+        personService.update(existingPerson.id, newPerson)
+          .then(response => {
+            const updatedPersons = persons.map(person =>
+              person.id !== existingPerson.id 
+              ? person 
+              : response.data
+            );
+            setPersons(updatedPersons);
+            setNewName('');
+            setNewNumber('');
+          })
+          .catch(error => {
+            alert('Error updating person');
+            console.error('Error:', error);
+          });
+      }
+    } else {
+      personService.create(newPerson)
+      .then(response => {
+        const updatedPersons = persons.concat(response.data);
+        setPersons(updatedPersons);
+        setNewName('');
+        setNewNumber('');
+      })
+      .catch(error => {
+        alert('Error updating person');
+        console.error('Error:', error);
+      });
     }
-
-    if (persons.some(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
-      return
-    }
-
-    personService.create(newPerson).then((response) => {
-      const updatedPersons = persons.concat(response.data)
-      setPersons(updatedPersons)
-      setNewName('')
-      setNewNumber('')
-    })
-  }
+  };
+  
 
   const deletePerson = (id) => {
     if (window.confirm(`Do you really want to delete this person?`)) {
