@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
+
 
 const Filter = ({ filter, handleFilterChange }) => {
   return (
@@ -52,7 +53,7 @@ const App = () => {
 
   useEffect(() => {
     console.log('effect')
-    axios.get('http://localhost:3000/persons').then(response => {
+    personService.getAll().then(response => {
       console.log('promise fulfilled')
       setPersons(response.data)
     })
@@ -81,12 +82,11 @@ const App = () => {
       return
     }
 
-    axios.post('http://localhost:3000/persons', newPerson) // send a post and save the promise
-      .then((response) => {                              // when post is successful, update notes const
-        const updatedPersons = persons.concat(newPerson) // create new list
-        setPersons(updatedPersons)                         // transform old notes to new note list
-        setNewName('')                                   // clear
-        setNewNumber('')                                 // clear
+    personService.create(newPerson).then((response) => {
+      const updatedPersons = persons.concat(newPerson)
+      setPersons(updatedPersons)
+      setNewName('')
+      setNewNumber('')
     })
   }
 
